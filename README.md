@@ -1,14 +1,18 @@
-Todo
-Render.comにフロントとバックがデプロイされるようにする
-Base URLを動的にする
+# 基幹システムの見積承認フローをエミュレートするAPI
 
+## リンク集
 
-# 基幹システムの見積もり承認フローをエミュレートするAPI
+- [操作パネル](https://dummy-approval-api.onrender.com)
+- [Swagger](https://dummy-approval-api.onrender.com/docs)
 
-https://dummy-approval-api.onrender.com/docs
-https://dummy-approval-api.onrender.com/frontend/index.html
+## デモの流れ
 
-## セットアップ
+1. ブラウザで操作パネルを開きます。
+2. 承認待ちの見積を承認中に移動させます。
+3. Swaggerから承認するか、PowerAutomateなどから承認します。
+4. ブラウザをリロードして確認します。
+
+## 開発環境のセットアップ
 
    ```bash
    python -m venv venv
@@ -25,25 +29,7 @@ https://dummy-approval-api.onrender.com/frontend/index.html
    python main.py
    ```
 
-   サーバーが http://localhost:8000 で起動します。
+   サーバーが[http://localhost:8000](http://localhost:8000) で起動します。
 
 2. フロントエンドの表示:
-   `frontend/index.html` をウェブブラウザで開きます。
-
-## デモの流れ
-
-1. バックエンドサーバーを起動します。
-
-2. ブラウザで `frontend/index.html` を開きます。
-
-3. 画面に承認待ちの見積もり一覧が表示されます。
-
-4. 任意の見積もりの「承認」ボタンをクリックします。
-
-5. http://localhost:8000/docs でGETとPOSTをします。
-
-6. ブラウザをリロードして確認します。
-
-## API仕様
-
-APIの詳細な仕様については、サーバー起動後に http://localhost:8000/docs にアクセスしてSwagger UIをご確認ください。
+   `http://localhost:8000` をウェブブラウザで開きます。
