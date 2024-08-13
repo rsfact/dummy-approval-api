@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>見積もり承認システム</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #resetButton {
+            background-color: #f44336;
+            margin-bottom: 20px;
+        }
+        #resetButton:hover {
+            background-color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>見積もり承認システム</h1>
+        <button id="resetButton">データリセット</button>
+
+        <h2>承認待ち見積もり</h2>
+        <table id="waitingQuoteTable">
+            <thead>
+                <tr>
+                    <th>見積もりID</th>
+                    <th>顧客名</th>
+                    <th>金額</th>
+                    <th>作成日</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript で動的に追加されます -->
+            </tbody>
+        </table>
+
+        <h2>承認中見積もり</h2>
+        <table id="pendingQuoteTable">
+            <thead>
+                <tr>
+                    <th>見積もりID</th>
+                    <th>顧客名</th>
+                    <th>金額</th>
+                    <th>作成日</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript で動的に追加されます -->
+            </tbody>
+        </table>
+
+        <h2>承認済み見積もり</h2>
+        <table id="approvedQuoteTable">
+            <thead>
+                <tr>
+                    <th>見積もりID</th>
+                    <th>顧客名</th>
+                    <th>金額</th>
+                    <th>作成日</th>
+                    <th>承認者</th>
+                    <th>承認日</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JavaScript で動的に追加されます -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const API_BASE_URL = '__BACKEND_URL__';
+
+        async function fetchAllQuotes() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/all-quotes`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('データの取得に失敗しました:', error);
+                return [];
+            }
+        }
+
+        async function startApproval(quoteId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/start-approval/${quoteId}`, {
+                    method: 'PUT',
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const result = await response.json();
+                console.log(result.message);
+                return true;
+            } catch (error) {
+                console.error('承認開始処理に失敗しました:', error);
+                return false;
+            }
+        }
+
+        async function approveQuote(quoteId) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/approve-quote/${quoteId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        final_approver: '承認者名',
+                        approval_date: new Date().toISOString(),
+                    }),
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const result = await response.json();
+                console.log(result.message);
+                return true;
+            } catch (error) {
+                console.error('承認処理に失敗しました:', error);
+                return false;
+            }
+        }
+
+        async function resetData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/reset-data`, {
+                    method: 'POST',
+                });
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const result = await response.json();
+                console.log(result.message);
+                return true;
+            } catch (error) {
+                console.error('データのリセットに失敗しました:', error);
+                return false;
+            }
+        }
+
+        function renderQuotes(quotes) {
+            const waitingTableBody = document.querySelector("#waitingQuoteTable tbody");
+            const pendingTableBody = document.querySelector("#pendingQuoteTable tbody");
+            const approvedTableBody = document.querySelector("#approvedQuoteTable tbody");
+            waitingTableBody.innerHTML = "";
+            pendingTableBody.innerHTML = "";
+            approvedTableBody.innerHTML = "";
+
+            quotes.forEach(quote => {
+                if (quote.status === "waiting") {
+                    const row = waitingTableBody.insertRow();
+                    row.insertCell(0).textContent = quote.id;
+                    row.insertCell(1).textContent = quote.customer;
+                    row.insertCell(2).textContent = `¥${quote.amount.toLocaleString()}`;
+                    row.insertCell(3).textContent = quote.created_date;
+
+                    const actionCell = row.insertCell(4);
+                    const startButton = document.createElement("button");
+                    startButton.textContent = "承認開始";
+                    startButton.onclick = async () => {
+                        if (await startApproval(quote.id)) {
+                            await loadQuotes();
+                        }
+                    };
+                    actionCell.appendChild(startButton);
+                } else if (quote.status === "pending") {
+                    const row = pendingTableBody.insertRow();
+                    row.insertCell(0).textContent = quote.id;
+                    row.insertCell(1).textContent = quote.customer;
+                    row.insertCell(2).textContent = `¥${quote.amount.toLocaleString()}`;
+                    row.insertCell(3).textContent = quote.created_date;
+
+                    const actionCell = row.insertCell(4);
+                    const approveButton = document.createElement("button");
+                    approveButton.textContent = "承認";
+                    approveButton.onclick = async () => {
+                        if (await approveQuote(quote.id)) {
+                            await loadQuotes();
+                        }
+                    };
+                    actionCell.appendChild(approveButton);
+                } else if (quote.status === "approved") {
+                    const row = approvedTableBody.insertRow();
+                    row.insertCell(0).textContent = quote.id;
+                    row.insertCell(1).textContent = quote.customer;
+                    row.insertCell(2).textContent = `¥${quote.amount.toLocaleString()}`;
+                    row.insertCell(3).textContent = quote.created_date;
+                    row.insertCell(4).textContent = quote.final_approver;
+                    row.insertCell(5).textContent = quote.approval_date;
+                }
+            });
+        }
+
+        async function loadQuotes() {
+            const quotes = await fetchAllQuotes();
+            renderQuotes(quotes);
+        }
+
+        document.getElementById('resetButton').addEventListener('click', async () => {
+            if (await resetData()) {
+                await loadQuotes();
+            }
+        });
+
+        // 初期ロード
+        loadQuotes();
+    </script>
+</body>
+</html>

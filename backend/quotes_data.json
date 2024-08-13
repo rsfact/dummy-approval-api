@@ -1,0 +1,50 @@
+[
+    {
+      "id": 1,
+      "customer_id": "CUST001",
+      "customer": "ABC Corp",
+      "amount": 1000.00,
+      "created_date": "2024-07-26",
+      "status": "waiting"
+    },
+    {
+      "id": 2,
+      "customer_id": "CUST002",
+      "customer": "XYZ Ltd",
+      "amount": 1500.50,
+      "created_date": "2024-07-27",
+      "status": "waiting"
+    },
+    {
+      "id": 3,
+      "customer_id": "CUST003",
+      "customer": "123 Industries",
+      "amount": 2000.75,
+      "created_date": "2024-07-28",
+      "status": "waiting"
+    },
+    {
+      "id": 4,
+      "customer_id": "CUST004",
+      "customer": "Best Solutions Inc",
+      "amount": 3000.25,
+      "created_date": "2024-07-29",
+      "status": "waiting"
+    },
+    {
+      "id": 5,
+      "customer_id": "CUST005",
+      "customer": "Global Traders",
+      "amount": 1750.00,
+      "created_date": "2024-07-30",
+      "status": "waiting"
+    },
+    {
+      "id": 6,
+      "customer_id": "CUST006",
+      "customer": "Tech Innovators",
+      "amount": 2500.80,
+      "created_date": "2024-07-31",
+      "status": "waiting"
+    }
+  ]
