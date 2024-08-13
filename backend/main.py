@@ -19,11 +19,11 @@ app.add_middleware(
 )
 
 # 静的ファイルの設定
-app.mount("/static", StaticFiles(directory="frontend"), name="static")
+app.mount("/static", StaticFiles(directory="../frontend"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_frontend():
-    with open("../frontend/index.html", "r") as f:
+    with open("../frontend/index.html", "r", encoding="utf-8") as f:
         html_content = f.read()
 
     # 環境変数を HTML に挿入

@@ -21,8 +21,7 @@ https://dummy-approval-api.onrender.com/frontend/index.html
 1. バックエンドの起動:
 
    ```bash
-   cd backend
-   python main.py
+   python backend/main.py
    ```
 
    サーバーが http://localhost:8000 で起動します。
