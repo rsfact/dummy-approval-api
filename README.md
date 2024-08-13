@@ -21,7 +21,8 @@ https://dummy-approval-api.onrender.com/frontend/index.html
 1. バックエンドの起動:
 
    ```bash
-   python backend/main.py
+   cd backend
+   python main.py
    ```
 
    サーバーが http://localhost:8000 で起動します。
@@ -39,7 +40,7 @@ https://dummy-approval-api.onrender.com/frontend/index.html
 
 4. 任意の見積もりの「承認」ボタンをクリックします。
 
-5. http://localhost:8000/docs でGETとPOSTをしあmす。
+5. http://localhost:8000/docs でGETとPOSTをします。
 
 6. ブラウザをリロードして確認します。
 
